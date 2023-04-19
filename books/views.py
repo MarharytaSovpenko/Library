@@ -9,7 +9,7 @@ from books.serializers import BookSerializer
 
 class BookViewSet(ModelViewSet):
     serializer_class = BookSerializer
-    queryset = Book.objects.filter(availability=True)
+    queryset = Book.objects.filter(availability=True).order_by("title")
 
     def get_permissions(self) -> List[BasePermission]:
         if self.action == "list" or self.action == "retrieve":
