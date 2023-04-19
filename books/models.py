@@ -11,7 +11,10 @@ class Book(models.Model):
     cover = models.BooleanField(choices=Enum.choices)
     inventory = models.PositiveIntegerField()
     daily_fee = models.DecimalField(max_digits=5, decimal_places=2)
-    need_to_refill = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.title
+
+    @property
+    def availability(self) -> bool:
+        return True if self.inventory != 0 else False
