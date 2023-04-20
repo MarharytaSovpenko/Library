@@ -19,3 +19,13 @@ class BorrowingListSerializer(BorrowingSerializer):
 class BorrowingDetailSerializer(BorrowingSerializer):
     book = BookSerializer(many=False, read_only=True)
     user = UserSerializer(many=False, read_only=True)
+
+
+class BorrowingCreateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Borrowing
+        fields = ("expected_return", "book", "user")
+
+
