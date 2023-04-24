@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from books.serializers import BookSerializer
@@ -28,4 +29,16 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
         model = Borrowing
         fields = ("expected_return", "book", "user")
 
+    @transaction.atomic
+    def create(self, validated_data: dict) -> Borrowing:
+        book = validated_data["book"]
+        if book.inventory == 0:
+            raise serializers.ValidationError(
+                "The book is not available for borrowing"
+            )
+        book.inventory -= 1
+        book.availability()
+        book.save()
+        borrowing = super().create(validated_data)
 
+        return borrowing
